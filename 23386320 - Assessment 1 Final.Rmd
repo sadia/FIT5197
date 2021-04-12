@@ -1,0 +1,828 @@
+---
+title: "Assessment 1"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+# FIT5197 Assessment 1
+
+## Probability, Bayes Theorem, and Correlation Analysis.
+
+
+### Student Name: Sadia Karim
+
+### Student Number: 23386320
+
+## Objectives
+This assignment assesses your understanding of basic statistics, probability, Bayes' Theorem and linear regression peakl, covered in Modules 1 and 2. The total marks of this assessment is __50__, and has 20% contribution to your final score.
+
+## Important Note
+* You can complete your assignment using the codes shared in the unit (ie Alexandria, video, practical activities on Moodle) and this template as the bases. However, <font color='red'>**you should make sure the codes you are using are correct and relevant to the question**</font>.
+
+* Please follow the structure of this template as much as you can.
+
+* You can use the prepopulated codes cells or change them if you prefer. However, please <font color='red'>**do not change the name of the key variables, functions, and parameters**, e.g. wineRed, wineWht. </font>. It helps us to read and understand your submission more efficiently.
+
+* All your answers need to be put into this file, and you can write equations in R markdown, please refer to https://rmd4sci.njtierney.com/math.html#example-math-commands for more information and examples.
+
+
+## Question 1: Probability and Distributions [25 Marks]
+
+Suppose we have 9 balls in a box, 4 white balls and 5 red balls. All the balls have the same size and same weight, only the color is different. Each time, we can take one ball out from the box without looking at its color. so, each ball have the equal chance to be picked from the box. 
+
+Using this and properties of random variables, please answer the following questions. 
+
+(a) If we take two balls from the box one by one, what is the probability that we can have two red balls? [5 marks]
+
+<font color='blue'> 
+Assuming there is no replacement, let R = 1 red ball (eg. RR = 2 red balls), W = 1 white ball (eg. WWW = 3 white balls).  
+There are a total of 9 balls, 5 of which are red (i.e. 9 choose 5). If we pick 1 ball from the 9 and it turns out to be red, then we have a total of 8 balls remaining in the box. Of those 8 balls, there are 4 red balls remaining.  
+
+If we are to pick another ball from the box, then we will be choosing from 8 balls, and from those 8 balls we are choosing 1 of 4 red balls (i.e. 8 choose 4).  
+Therefore the probability of choosing 2 red balls is:
+
+$$Pr(RR) = \frac{5}{9}*\frac{4}{8}=\frac{5}{18}$$
+
+
+</font>
+
+
+
+(b) If we take three balls from the box one by one, what is the probability that we can have at least one white ball? [5 marks]
+
+<font color='blue'> 
+The probability of choosing "at least" one ball is the equivalent of "Total probability - the probability of choose no white balls". This is due to the probability axiom that total probability = 1.
+
+$Pr(at least one W) = 1 - Pr(no white balls)$
+
+Since we are drawing 3 balls, if none of them are white then we are choosing 3 red balls from 5 red balls, all out of a total of 9 balls  
+
+$Pr(no white balls) = Pr(RRR)$
+
+Therefore the probability of selecting 3 red balls out of 5 red balls in a row, from a total of 9 balls is:
+
+$$Pr(RRR) = \frac{5}{9}*\frac{4}{8}*\frac{3}{7} = \frac{5}{42}$$
+
+Therefore, the probability of selected at least 1 white balls is: 
+$$Pr(at least one W) = 1 - Pr(RRR) = 1 - \frac{5}{42} = \frac{37}{42}$$
+
+</font>
+
+
+
+(c) If we take five balls from the box one by one, what is the probability that we can have exact three white balls? [5 marks]
+
+<font color='blue'> 
+Let 3W2R = 3 white balls, 2 red balls.  
+Order is *not* important, balls are *not replaced*  
+
+Since we are choosing 5 balls from a total of 9 balls, there are (9 choose 5) combinations.  
+Total number of ways to choose 5 balls = 
+$$Pr(choose5) = \binom95 = \frac{9!}{5!4!} = 126$$
+
+
+Total number of ways to choose 3 white balls out of a total of 4 white balls
+$$Pr(3W) = \binom43 = \frac{4!}{3!1!} = 4$$
+
+Total number of ways to choose 2 red balls out of a total of 5 red balls
+$$Pr(2R) = \binom52 = \frac{5!}{2!3!} = 10$$
+
+Therefore:
+$$Pr(3W2R) = \frac{Pr(3W)Pr(2R)}{Pr(choose5)} = \frac{4*10}{126} = \frac{20}{63}$$
+
+</font>
+
+
+
+
+
+
+(d) If a white ball gives us 1 points, and a red ball gives us 2 points. If we take three balls from the box one by one, what is the probability that we can have a total points greater than 4? [5 marks]
+
+<font color='blue'> 
+Let W = 1 point  
+Let R = 2 points  
+  
+To score:  
+3 points we need {WWW}  
+4 points we need any one of {WWR, WRW, RWW}  
+
+$$Pr(3 points) = WWW = \frac{4}{9}*\frac{3}{8}*\frac{2}{7}=\frac{1}{21} $$
+
+$$Pr(4 points) = WWR + WRW + RWW = (\frac{4}{9}*\frac{3}{8}*\frac{5}{7}) + (\frac{4}{9}*\frac{5}{8}*\frac{3}{7}) + (\frac{5}{9}*\frac{4}{8}*\frac{3}{7}) = \frac{5}{14}$$
+
+The probability of getting greater than 4 points is 1 - (probability of getting 3 points or 4 points)
+$$Pr(>4 points) = 1 - (Pr(3 points) + Pr(4 points))$$
+$$Pr(>4 points) = 1-(\frac{1}{21}+\frac{5}{14})=1-\frac{17}{42} = \frac{25}{42}$$
+
+</font>
+
+
+
+
+(e) If we take five balls out of the box one by one, what is the probability that we can have an odd points? [5 marks]
+
+<font color='blue'> 
+To obtain an odd number of points, we need either 1 white ball (eg. WRRRR) or 3 white balls (eg. WWWRR) balls in our event space. We cannot have any more white balls since we have a maximum of 4 white balls in the box.
+
+If A is the event that we have an odd number of points, then:
+$$Pr(A) = Pr(1W) + Pr(3W)$$
+
+There are $\binom41$ ways to choose 1White, and $\binom54$ ways to choose 4Red, so
+$$Pr(1W) = \frac{\binom41 \binom54}{\binom95} =\frac{10}{63}$$
+
+There are $\binom43$ ways to choose 3White, and $\binom52$ ways to choose 2Red, so
+$$Pr(3W) = \frac{\binom43 \binom52}{\binom95} =\frac{20}{63}$$
+
+Therefore:
+$$Pr(A) = Pr(1White) + Pr(3White) = \frac{10}{63}+\frac{20}{63} = \frac{10}{21}$$
+
+</font>
+ 
+
+
+
+
+
+
+## Question 2: Conditional probability and Bayes Theorem [10 Marks]
+
+You are asked to use conditional probability and Bayes Theorem introduced in Module 1 to solve the questions below. 
+
+Suppose there are totally 3 production lines (LA, LB and LC) in a factory. LA, LB and LC account for 20%, 30% and 50% of the factory output, respectively. The fraction of defective items produced is 3% for the LA; 4% for LB; and 5% for LC. 
+
+(a) An item is ramdonly chosen from the total output. What is the probability of the item is in good quality? Please show your solution step by step.Hint: definition of events is important. [5 Marks] 
+
+<font color='blue'> 
+Pr(LA) = 0.2  
+Pr(LB) = 0.3  
+Pr(LC) = 0.5  
+  
+Let D be the event of a defective item selected.  
+Therefore:  
+Pr(D|LA) = 0.03  
+Pr(D|LB) = 0.04  
+Pr(D|LC) = 0.05  
+
+The total probability of getting a defective item is the probabilities of all of the lanes producing a defective item.
+$$Pr(D) = Pr(D|LA)Pr(LA) + Pr(D|LB)Pr(LB) + Pr(D|LC)Pr(LC)$$
+
+$$Pr(D) = (0.03)(0.2) + (0.04)(0.3) + (0.05)(0.5) = 0.043 = 4.3\%$$
+
+Therefore the probability of a good quality item selected is (by the probability axiom that total probability = 1):
+$$Pr(D^{c})=1-Pr(D)$$
+$$= 1-0.043 = 0.957 = 95.7\%$$
+
+Probability of a good item = $95.7\%$
+</font> 
+
+
+(b) An item is ramdonly chosen from the total output and is found to be defective. Which production line do you think item is produced? Please show your solution step by step. [5 Marks] 
+
+<font color='blue'> 
+To calculate which production line most likely produced the defective item, we need to calculate the probability of each production line producing a defect. 
+
+Since we already know the probability of a defect for each production line Pr(defect|productionLine), we can apply Bayes' Theorem  to calculate Pr(productionLine|defect).
+
+$$Bayes' Theorem = \frac{Pr(A|B)Pr(B)}{Pr(A)}$$
+
+Pr(Defect came from Line A) = Pr(LA|D) = $\frac{Pr(D|LA)Pr(LA)}{Pr(D)}$ = $\frac{(0.03)(0.2)}{(0.043)}*100$ = 13.95%  
+Pr(Defect came from Line B) = Pr(LB|D) = $\frac{Pr(D|LB)Pr(LB)}{Pr(D)}$ = $\frac{(0.04)(0.3)}{(0.043)}*100$ = 27.91%  
+Pr(Defect came from Line C) = Pr(LC|D) = $\frac{Pr(D|LC)Pr(LC)}{Pr(D)}$ = $\frac{(0.05)(0.5)}{(0.043)}*100$ = 58.14%  
+
+We can see that it is most likely that the defect came from Production line C as it has the highest probability of producing defects.
+
+</font> 
+
+
+
+
+
+
+## Question 3: Correlation Analysis [15 Marks]
+
+
+Wine Quality data sets contains two files, one for red wine and the other for white wine. Details of two data sets can be found in https://archive.ics.uci.edu/ml/datasets/Wine+Quality. Please provide a correlation analysis of two data sets and outline your findings. <font color='red'>Please note that result visualisation is needed.</font> 
+
+```{r}
+# You are free to install any required library for visualisation
+
+# If you have error that any of the above library is missing, please install it via install.package(...) or Tools -> Install packages in RStudio
+
+library(ISLR)
+library(MASS)
+library(dplyr)
+library(Hmisc)
+library(tidyr)
+library(gridExtra)
+library(ggplot2)
+library(gtable)
+library(grid)
+library(directlabels)
+library(GGally)
+library(reshape2)
+```
+
+
+```{r}
+winRed = read.csv('winequality-red.csv') 
+
+winWht = read.csv('winequality-white.csv') 
+```
+
+```{r}
+head(winRed)
+```
+```{r}
+head(winWht)
+```
+(a) Obtain the basic statistical information from the 'wine' data sets. [6 marks]
+<font color='blue'> 
+```{r}
+colnames(winRed)
+head(winRed)
+```
+
+```{r}
+colnames(winWht)
+head(winWht)
+```
+
+
+Looking at the heads and column names of both datasets I can see that they have the same column names. I am particularly interested to see the column 'quality'. From investigating the data source further, I have discovered that all of the variables contribute to the final 'quality' score of the wine. Therefore the quality variable is that it is a score given to the wine based on the other variables.
+
+First I will investigate the structure of the datasets:
+```{r}
+str(winRed)
+str(winWht)
+```
+
+From the above, we can see that:
+* For winRed:
+There are 1599 observations and 12 variables.
+All of the variables are numerical values, except quality which is an integer.
+
+* For winWht:
+There are 4898 observations and 12 variables.
+All of the variables are numerical values, except quality which is an integer.
+
+For data integrity I will also check for missing data:
+```{r}
+sum(is.na(winRed))
+sum(is.na(winWht))
+```
+There is no missing data! :)
+
+Now, to explore each of each of the variables. I will find the following of each value:
+* Summary
+* Peak** 
+* Standard Deviation
+* IQR
+
+The above information will tell me information about the spread of the data, its concentration, and identify the existence of outliers.
+
+** I am interested in finding the peak value (peak) of each variable. By comparing the peak value to the median and mean, I can envision the position and height of the peak of each graph and further determine the shape of the distribution.  
+I have written a function getPeak() below which finds the value in the distribution that is the highest on the y-axis, and then finds the corresponding x value. I know that some data will have multiple peaks but I am initially just looking for the highest peak to get an estimation of what the distribution may look like.
+```{r}
+getPeak <- function(v) {
+  yval <- which.max(density(v)$y)
+  density(v)$x[yval]
+}
+
+```
+
+## winRed Observations
+From the summaries I have observed the following about winRed:
+
+* **winRed Fixed Acidity**: most acids involved with wine or fixed or nonvolatile (do not evaporate readily) 
+```{r}
+summary(winRed$fixed.acidity)
+paste("Peak is at", round(getPeak(winRed$fixed.acidity),4))
+paste("Standard deviation (SD) is ", round(sd(winRed$fixed.acidity),4))
+paste("IQR is ", round(IQR(winRed$fixed.acidity),4))
+```
+  - The median is a little far from the mean, and peak is very close to 1stQ value, indicating a right skew as further supported by the distance from 3rdQ value to the max value, but peak will be quite skinny as indicated by the IQR value as being very small. Standard deviation is also quite small meaning most of the values will be close to the mean.
+
+* **winRed Volatile Acidity**: The amount of acetic acid in wine, which at too high of levels can lead to an unpleasant, vinegar taste
+```{r}
+summary(winRed$volatile.acidity)
+paste("Peak is at", round(getPeak(winRed$volatile.acidity),4))
+paste("Standard deviation (SD) is ", round(sd(winRed$volatile.acidity),4))
+paste("IQR is ", round(IQR(winRed$volatile.acidity),4))
+```
+  - Median is very close to the mean, however peak is greater than both and very close to 3rdQ value. The IQR and SD are both quite small indicating majority of the data points will be clustered around the mean. This would indicated a wide peak.
+  
+* **winRed Citric Acid**: Found in small quantities, citric acid can add 'freshness' and flavor to wines
+```{r}
+summary(winRed$citric.acid)
+paste("Peak is at", round(getPeak(winRed$citric.acid),4))
+paste("Standard deviation (SD) is ", round(sd(winRed$citric.acid),4))
+paste("IQR is ", round(IQR(winRed$citric.acid),4))
+```
+  - Median is very close to the mean however the peak and min value are also extremely close, indicating that could be a heavily right skewed distribution. The 1stQ and 3rdQ values are quite far apart, as are the 3rdQ and max values, again supporting a right skew. The standard deviation is quite low, meaning most values are quite concentrated around the mean, and the IQR is quite small, so there is going to be a wide peak around the mean. 
+
+* **winRed Residual Sugar**: the amount of sugar remaining after fermentation stops, it's rare to find wines with less than 1 gram/liter and wines with greater than 45 grams/liter are considered sweet
+```{r}
+summary(winRed$residual.sugar)
+paste("Peak is at", round(getPeak(winRed$residual.sugar),4))
+paste("Standard deviation (SD) is ", round(sd(winRed$residual.sugar),4))
+paste("IQR is ", round(IQR(winRed$residual.sugar),4))
+```
+  - Median is close to the peak and 1stQ, the mean is very close to the 3rdQ, and IQR is very small - indicating a very narrow peak. The max value is extremely far from 3rdQ compared to min and 1stQ values, so graph will be heavily skewed to the right. The SD is a little high, but this is probably due to being affected by the maximum value which seems to be an outlier based on 3rdQ value.
+  
+* **winRed Chlorides**: the amount of salt in the wine
+```{r}
+summary(winRed$chlorides)
+paste("Peak is at", round(getPeak(winRed$chlorides),4))
+paste("Standard deviation (SD) is ", round(sd(winRed$chlorides),4))
+paste("IQR is ", round(IQR(winRed$chlorides),4))
+```
+  - Median is very close the mean, peak, 1stQ and 3rdQ values meaning this could be a skewed distribution. Looking at the difference between 3rdQ and max values, the data is skewed to the right. This is further supported by how much closer the min and 1stQ values are in comparison. Variance and SD and IQR are very low so the graph is going to have a very narrow peak.
+
+* **winRed Free Sulfur Dioxide**: the free form of SO2 exists in equilibrium between molecular SO2 (as a dissolved gas) and bisulfite ion; it prevents microbial growth and the oxidation of wine
+```{r}
+summary(winRed$free.sulfur.dioxide)
+paste("Peak is at", round(getPeak(winRed$free.sulfur.dioxide),4))
+paste("Standard deviation (SD) is ", round(sd(winRed$free.sulfur.dioxide),4))
+paste("IQR is ", round(IQR(winRed$free.sulfur.dioxide),4))
+```
+  - The mean and median are close together however the peak is very far and closer to the 1stQ. This could be a wide peak with what I imagine is a steep increase up to the peak, and then a slow decrease towards the mean, and then tapering off quite quickly towards the max value which is probably an outlier. This is graph is skewed to the right as can be seen by the "difference between 3rdQ and max" vs. "difference between min and 1stQ".
+  
+  
+* **winRed Total Sulfur Dioxide**: amount of free and bound forms of S02; in low concentrations, SO2 is mostly undetectable in wine, but at free SO2 concentrations over 50 ppm, SO2 becomes evident in the nose and taste of wine
+```{r}
+summary(winRed$total.sulfur.dioxide)
+paste("Peak is at", round(getPeak(winRed$total.sulfur.dioxide),4))
+paste("Standard deviation (SD) is ", round(sd(winRed$total.sulfur.dioxide),4))
+paste("IQR is ", round(IQR(winRed$total.sulfur.dioxide),4))
+```
+  - The mean and median are quite far apart so these values are quite skewed. The peak is is also quite far away from both and closer to 1stQ. Since the difference between 1stQ and min value is so much smaller compared to the difference between 3rdQ and max, the distribution is heavily right-skewed with a sharp increase to the peak. The IQR is quite small when looking at the range of values, so I would expect the slope in this part of the graph to be gentle.
+
+* **winRed Density**: the density of water is close to that of water depending on the percent alcohol and sugar content
+```{r}
+summary(winRed$density)
+paste("Peak is at", round(getPeak(winRed$density),4))
+paste("Standard deviation (SD) is ", round(sd(winRed$density),4))
+paste("IQR is ", round(IQR(winRed$density),4))
+```
+  - The mean, median, and peak are all extremely close, however the range (range = 0.0136) of this graph is not very large, so I expect that this graph will look very close to a normal distribution around the median. the SD and IQR are also extremely small, so the peak of the graph will be quite narrow. 
+
+
+* **winRed pH**: describes how acidic or basic a wine is on a scale from 0 (very acidic) to 14 (very basic); most wines are between 3-4 on the pH scale
+```{r}
+summary(winRed$pH)
+paste("Peak is at", round(getPeak(winRed$pH),4))
+paste("Standard deviation (SD) is ", round(sd(winRed$pH),4))
+paste("IQR is ", round(IQR(winRed$pH),4))
+```
+  - Mean, median, and peak are again quite close together, the range is not very large (range = 1.27) and SD and IQR are very small, so again I expect this graph to have a narrow peak concentrated around the median. Also it would seem that our pH data behaves within the expected range of wine pH (between 3-4).
+
+* **winRed Sulphates**: a wine additive which can contribute to sulfur dioxide gas (S02) levels, wich acts as an antimicrobial and antioxidant
+```{r}
+summary(winRed$sulphates)
+paste("Peak is at", round(getPeak(winRed$sulphates),4))
+paste("Standard deviation (SD) is ", round(sd(winRed$sulphates),4))
+paste("IQR is ", round(IQR(winRed$sulphates),4))
+```
+  - The mean and median are quite close together, however the peak is closer to the 1stQ, indicating a right skew. The difference between 3rdQ and max value is quite large further supporting a heavy right skew. The SD and IQR are also quite small, indicating that the peak is quite narrow.
+
+
+* **winRed Alcohol**: the percent alcohol content of the wine
+```{r}
+summary(winRed$alcohol)
+paste("Peak is at", round(getPeak(winRed$alcohol),4))
+paste("Standard deviation (SD) is ", round(sd(winRed$alcohol),4))
+paste("IQR is ", round(IQR(winRed$alcohol),4))
+```
+  - Mean and median and very close, however peak and 1stQ are the same value, indicating a steep increase to the peak, with right skew. Since mean and 3rdQ are quite close, this further supports right skew. IQR and SD are very small, however the peak is not inside the IQR (or rather it is at the very beginning), so graph is very steep at the beginning, climbing to the peak, then decending a little slower.
+
+* **winRed Quality**: Output variable based on sensory data. Score between 0 and 10.
+```{r}
+summary(winRed$quality)
+paste("Peak is at", round(getPeak(winRed$quality),4))
+```
+  - Quality is the only variable that is discrete instead of continuous since it is an output based on the other variables. We know that the rating ranges from 0-10 (with 0 being of low quality, 10 being of outstanding quality), but in our data we have values from [3,8] and with the peak being 5, indicating that most of the red wines in the data are of average quality. With the mean being slightly closer to the median, I would expect values 5 and 6 as being two separate peaks that are of almost equal height.
+
+## winWht Observations
+From the summaries I have observed the following about winWht:
+
+* **winWht Fixed Acidity**: most acids involved with wine or fixed or nonvolatile (do not evaporate readily) 
+```{r}
+summary(winWht$fixed.acidity)
+paste("Peak is at", round(getPeak(winWht$fixed.acidity),4))
+paste("Standard deviation (SD) is ", round(sd(winWht$fixed.acidity),4))
+paste("IQR is ", round(IQR(winWht$fixed.acidity),4))
+```
+  - The mean, median and peak are almost the same value, with a very small IQR and SD, indicating a very narrow peak Looking at the difference between 3rdQ and max value indicates a right skew of the graph. This is further supported by the smaller difference between min and 1stQ.
+
+* **winWht Volatile Acidity**: The amount of acetic acid in wine, which at too high of levels can lead to an unpleasant, vinegar taste
+```{r}
+summary(winWht$volatile.acidity)
+paste("Peak is at", round(getPeak(winWht$volatile.acidity),4))
+paste("Standard deviation (SD) is ", round(sd(winWht$volatile.acidity),4))
+paste("IQR is ", round(IQR(winWht$volatile.acidity),4))
+```
+  - Mean, median and peak are all quite close together, with a very small IQR and SD, indicating a narrow peak, however the difference between 3rdQ and max value is quite high compared to the difference between min and 1stQ, indicating a right skew.
+  
+* **winWht Citric Acid**: Found in small quantities, citric acid can add 'freshness' and flavor to wines
+```{r}
+summary(winWht$citric.acid)
+paste("Peak is at", round(getPeak(winWht$citric.acid),4))
+paste("Standard deviation (SD) is ", round(sd(winWht$citric.acid),4))
+paste("IQR is ", round(IQR(winWht$citric.acid),4))
+```
+  - Most of the values are close to each other and close to the mean value, with a small IQR and SD, I would expect a narrow peak. Observing the difference between the 3rdQ and max value indicates a right skew.
+
+* **winWht Residual Sugar**: the amount of sugar remaining after fermentation stops, it's rare to find wines with less than 1 gram/liter and wines with greater than 45 grams/liter are considered sweet
+```{r}
+summary(winWht$residual.sugar)
+paste("Peak is at", round(getPeak(winWht$residual.sugar),4))
+paste("Standard deviation (SD) is ", round(sd(winWht$residual.sugar),4))
+paste("IQR is ", round(IQR(winWht$residual.sugar),4))
+```
+  - Median and mean are close, however the peak is very far. Also the difference between 3rdQ and max value is very high, indicating a heavily right skew. The SD and IQR are both quite small, so I expect a heavy right skew. The max value is 65.8 so there are some sweet wines in this dataset.
+  
+* **winWht Chlorides**: the amount of salt in the wine
+```{r}
+summary(winWht$chlorides)
+paste("Peak is at", round(getPeak(winWht$chlorides),4))
+paste("Standard deviation (SD) is ", round(sd(winWht$chlorides),4))
+paste("IQR is ", round(IQR(winWht$chlorides),4))
+```
+  - Median, mean and peak are all very close, and SD and IQR are extremely small, indicating a very narrow peak. Difference between 3rdQ and max value indicate a heavy right skew. Most wines seem to have low chloride levels, with some exceptions.
+
+* **winWht Free Sulfur Dioxide**: the free form of SO2 exists in equilibrium between molecular SO2 (as a dissolved gas) and bisulfite ion; it prevents microbial growth and the oxidation of wine
+```{r}
+summary(winWht$free.sulfur.dioxide)
+paste("Peak is at", round(getPeak(winWht$free.sulfur.dioxide),4))
+paste("Standard deviation (SD) is ", round(sd(winWht$free.sulfur.dioxide),4))
+paste("IQR is ", round(IQR(winWht$free.sulfur.dioxide),4))
+```
+  - Mean and median are close together, with the peak a little lower. The SD is quite large, but the IQR is very small, indicating a narrow peak but there are data outliers. The difference between 3rdQ and max indicates a heavy right skew. There is a large range of values here.
+  
+  
+* **winWht Total Sulfur Dioxide**: amount of free and bound forms of S02; in low concentrations, SO2 is mostly undetectable in wine, but at free SO2 concentrations over 50 ppm, SO2 becomes evident in the nose and taste of wine
+```{r}
+summary(winWht$total.sulfur.dioxide)
+paste("Peak is at", round(getPeak(winWht$total.sulfur.dioxide),4))
+paste("Standard deviation (SD) is ", round(sd(winWht$total.sulfur.dioxide),4))
+paste("IQR is ", round(IQR(winWht$total.sulfur.dioxide),4))
+```
+  - The mean and median are quite close together, however since the median is lower than the mean, this indicates a right skew. Further supported by the difference between 3rdQ and max -> the max value is significantly higher. the SD and IQR are quite high, indicating that the peak will be quite wide. Majority of wines in the winWht dataset have evident SO2 values.
+
+* **winWht Density**: the density of water is close to that of water depending on the percent alcohol and sugar content
+```{r}
+summary(winWht$density)
+paste("Peak is at", round(getPeak(winWht$density),4))
+paste("Standard deviation (SD) is ", round(sd(winWht$density),4))
+paste("IQR is ", round(IQR(winWht$density),4))
+```
+  - The mean, median, and peak are all extremely close, and the SD and IQR are also very small, so this graph is very heavily clustered around the mean. However, the difference in value between 3rdQ and max is 
+0.0429, which is quite high compared to the differences between the other values. This indicates a heavily right-skewed graph.
+
+* **winWht pH**: describes how acidic or basic a wine is on a scale from 0 (very acidic) to 14 (very basic); most wines are between 3-4 on the pH scale
+```{r}
+summary(winWht$pH)
+paste("Peak is at", round(getPeak(winWht$pH),4))
+paste("Standard deviation (SD) is ", round(sd(winWht$pH),4))
+paste("IQR is ", round(IQR(winWht$pH),4))
+```
+Mean, median, and peak are again quite close together, and IQR and SD are very small, so this graph is very heavily concentrated around the mean and peak is narrow.
+
+* **winWht Sulphates**: a wine additive which can contribute to sulfur dioxide gas (S02) levels, wich acts as an antimicrobial and antioxidant
+```{r}
+summary(winWht$sulphates)
+paste("Peak is at", round(getPeak(winWht$sulphates),4))
+paste("Standard deviation (SD) is ", round(sd(winWht$sulphates),4))
+paste("IQR is ", round(IQR(winWht$sulphates),4))
+```
+Mean and median are quite close together, with the median less than the mean. This indicates a right skew. Further supported by the difference between the 3rdQ and max values being greater than the difference between the min and 1stQ values. The IQR is quite small, as is the SD so I would imagine the peak to be narrow.
+
+
+* **winWht Alcohol**: the percent alcohol content of the wine
+```{r}
+summary(winWht$alcohol)
+paste("Peak is at", round(getPeak(winWht$alcohol),4))
+paste("Standard deviation (SD) is ", round(sd(winWht$alcohol),4))
+paste("IQR is ", round(IQR(winWht$alcohol),4))
+```
+  - Mean and median and very close, and peak and 1stQ are very close indicating this is a slightly flat graph. The SD and IQR are a little high so it is a wider flat graph.
+
+* **winWht Quality**: Output variable based on sensory data. Score between 0 and 10.
+```{r}
+summary(winWht$quality)
+getPeak(winWht$quality)
+```
+  - Quality scores ranges from [3,9], with the median being 6. This is the same as the winRed data, similarly the mean is close to 6, so I imagine there is another peak at 5, indicating that most wines are of average quality.
+
+</font>
+
+(b) Plotting the dataset to find associations (correlations) among variables. Present and discuss your findings from each of the plots. You can put your findings below the plots. [9 marks]
+
+<font color='blue'>
+
+## winRed Variables Count Plot   
+
+```{r, winRedAll, echo=FALSE, message=FALSE, warning=FALSE}
+# gather all data for plotting
+all_winRed <- gather(winRed)
+
+# gather all the data points in winRed and plot them against their values
+ggplot(gather(all_winRed), aes(value)) + 
+    ggtitle("All winRed Data") +
+    geom_histogram(color="lightblue") + 
+    facet_wrap(~key, scales = "free")
+
+```  
+  
+The above plots show the count values of all the variables. Some of these are a little inaccurate due to a standard binwidth being applied to all of the graphs (eg. citric acid could be further refined), but it gives a good high level description of the distribution. From here I can see that a lot of the data has a right skew, so there are a lot of outliers in our data.
+  
+Alcohol seems to have a wide spread, and citric acid has a strange graph. It would warrant further investigation.
+
+## winRed Correlation Matrix  
+```{r, winRedCorr, echo=FALSE, message=FALSE, warning=FALSE}
+# Function to colour-code the correlation matrix. 
+# I was specifically looking for a function that could make the upper diagonal of the ggpairs matrix into a heatmap. This is not necessary but it makes it nice and easy to read and identify strong positive/negative correlations.
+# Full credit goes to the author of this function - I did not write it.
+# Function can be found here: https://stackoverflow.com/questions/45873483/ggpairs-plot-with-heatmap-of-correlation-values
+
+colour_corr <- function(data, mapping, method="p", use="everything", ...){
+              # grab data
+              x <- eval_data_col(data, mapping$x)
+              y <- eval_data_col(data, mapping$y)
+
+              # calculate correlation
+              corr <- cor(x, y, method=method, use=use)
+
+              colFn <- colorRampPalette(c("blue", "white", "red"), interpolate ='spline')
+              fill <- colFn(100)[findInterval(corr, seq(-1, 1, length=100))]
+
+              ggally_cor(data = data, mapping = mapping, ...) +
+                theme_void() +
+                theme(panel.background = element_rect(fill=fill))
+            }
+
+# plot the correlation matrix
+ggpairs(winRed,
+        progress = FALSE,
+        lower = list(continuous = wrap("points", alpha = 0.3, size=0.1)),
+        title = "winRed",
+        axisLabels="none",
+        # colour-code the correlation matrix so that we easily understand the values
+        upper = list(continuous = wrap(colour_corr, size=2)),
+        # in order the wrap the column names, we are replacing the dots in the column names with spaces
+        columnLabels = gsub('.', ' ', colnames(winRed), fixed = T), 
+        # this is because the label_wrap_gen function only wraps on white spaces. This will make it easier to read the matrix
+        labeller = label_wrap_gen(10)
+      ) +
+  theme(strip.text = element_text(size=4, lineheight=1))
+
+
+```  
+  
+Along the diagonal, I can see the density plots of each of the variables. It is clear that most of these data points are right-skewed, with only density and pH being around the centre. The density plot of citric acid is quite interesting to me as it is an odd shape. I'd be interested to see if and how it affects quality.
+
+From the above correlation matrix, I can see the following correlations with Quality:   
+
+* Quality has a weak positive correlation with alcohol, sulphates, and citric acid  
+
+* Quality has a weak negative correlation with volatile acidity  
+  
+Other variables that have correlations: 
+
+* Strong positive correlation:  
+  - Density - Fixed Acidity
+  - Citric Acid - Fixed Acidity
+  - Total Sulfur Dioxide - Free Sulfur Dioxide
+
+* Weak positive correlation:
+  - Density - Citric Acid
+  - Density - Residual Sugar
+  - Sulfates - Chlorides
+  - Sulfates - Citric Acid
+  
+* Strong negative correlation:
+  - pH - Fixed Acidity
+  - pH - Citric Acid
+  - Citric Acid - Volatile Acidity
+  - Density - Alcohol
+
+* Weak negative correlation:
+  - Quality - Volatile Acidity
+  - pH - Density
+    
+It makes sense for free sulfur dioxide to be strongly positively correlated with total sulfur dioxide, since the total amount includes the free amount + bound sulfate amounts. I think the relationship between citric acid and fixed acidity makes sense as well, since citric acid is a type of fixed acid, so it would make sense for both of these values to be strongly positively correlated. However , initially I was not confident of the strong correlation with density and fixed acidity. However after some research I have discovered that the acids that make up the fixed acidity component (tartaric, malic, and citric) all have densities that are greater than water, so it makes sense that the higher the fixed acidity level, the higher the density.
+
+Similarly, for the values with strong negative correlations they make logical sense. The more acidic a substance becomes, the lower the pH level, so it makes sense for the pH to be strongly negatively correlated with the acid values.  
+For alcohol and density, this is also logical. Ethanol has a density that is less than water, so the more alcohol that the wine has, the lower the density. However it is interesting to note that although quality and alcohol have a positive correlation (0.476), quality and density seem to have a negative correlation (-0.175) - this does not really make sense since density is directly affected by alcohol, so there must be other factors that are affecting the density score. 
+I am not sure I understand the strong negative correlation between citric acid and volatile acidity. Could it be that since citric acid is a type of fixed acid, its presence reduces the volatile acidity flavour? 
+
+
+One point that sticks out to me as being quite odd is that there is a positive relation between pH and volatile acidity. This does not make any sense, since a lower pH indicates a higher acidity. I will look into this deeper later.
+  
+From the scatter plots along the lower half of the diagonal, the data clearly shows the strong positive and negative correlations, but we can also see the distribution of outliers. For example, if we removed the outliers from the density-residual sugar relationsip, I would imagine that this relationship would be much stronger.
+
+First I will focus on diving deeper into the variables that affect quality.  
+
+Looking deeper at the quality variable, I will graph it against all other variables:
+```{r, winRedQuality, echo=FALSE, message=FALSE, warning=FALSE}
+# the melt function essentially takes the data from winRed$quality and reshapes it into a dataframe with only two columns - the variable and the value. 
+ggplot(melt(winRed, "quality"), aes(value, quality, color = variable)) +  
+  ggtitle("All winRed Quality") +
+  geom_point(alpha=0.3) + 
+  # Add a linear model line to show the graph to show the general gradient
+  geom_smooth(aes(value, quality, colour=variable), method=lm, se=FALSE) +
+  facet_wrap(.~variable, scales = "free")
+
+```
+We can see that the top 3 variables positively affecting quality are:
+
+1. Alcohol
+
+2. Sulphates
+
+3. Citric Acid
+
+
+It appears that residual sugar has almost no effect on quality. 
+
+The top 3 variables negatively affecting quality are:
+
+1. Volatile Acidity 
+
+2. Total Sulfur Dioxide
+
+3. Density 
+
+
+I would like to take a look at the pH vs. volatile acidity now. From the correlation matrix, this has a positive correlation which does not make sense - a higher pH indicates a more basic solution. Adding acid should reduce the pH.
+
+### Volatile Acidity vs. pH  
+```{r, winWht-va-vs-ph, echo=FALSE, message=FALSE, warning=FALSE}
+    ggplot(winRed, aes(x= volatile.acidity, y=pH)) +
+      ggtitle("Volatile Acidity vs. pH") +
+      geom_jitter(alpha = 0.3) +
+      geom_smooth(aes(volatile.acidity, pH, colour="red"), method=lm, se=FALSE, show.legend = FALSE) 
+```  
+  
+It can be seen that most of the points on the graph behave slightly differently to what we would expect a graph between acidity and pH to look like. I would expect that the more the acidity level increases, the lower the pH. However we can see that there are a number of points here where even though the acidity level is the same (or very similar), they have vastly different pH levels. This indicates to me that some of the other variables may be affecting this graph.  
+  
+```{r, winRed-va-all, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(melt(winRed, "volatile.acidity"), aes(value, volatile.acidity, color = variable)) +  
+  geom_point(alpha=0.3) + 
+  geom_smooth(aes(value, volatile.acidity, colour=variable), method=lm, se=FALSE) +
+  facet_wrap(.~variable, scales = "free")
+
+```  
+    
+We can see that volatile acidity is strongly negatively correlated with fixed acidity, citric acid, sulphates, and alcohol (it is also strongly negatively correlated with quality, however volatile acidity is an input to quality, and not the other way around. Therefore quality cannot affect volatile acidity, but volatile acidity DOES affect quality). It could be that one of these variables has affected the volatile acidity points, resulting in an odd relationship with pH.  
+
+
+## winWht Variables Count Plot
+```{r, winWhtAll, echo=FALSE, message=FALSE, warning=FALSE}
+all_winWht <- gather(winWht)
+
+ggplot(gather(all_winWht), aes(value)) + 
+    ggtitle("All winWht Data") +
+    geom_histogram(color="lightpink") + 
+    facet_wrap(~key, scales = "free")
+
+```  
+  
+Similar to the winRed data, many of the variables have a strong right skew in winWht. Alcohol has a very wide spread, as does pH and sulphates. The strong right skew indicates that there are a number of outliers in the data. The graphs of chlorides, citric acid, density and free sulfur dioxide all have narrow peaks, indicating that is not much spread in these variables, so it will be interesting to see if and how they affect quality.
+
+The quality graph indicates that most of these wines have an average rating.
+
+```{r, winWhtCorr, echo=FALSE, message=FALSE, warning=FALSE}
+ggpairs(winWht,
+        progress = FALSE,
+        lower = list(continuous = wrap("points", alpha = 0.3, size=0.1)),
+        title = "winWht",
+        axisLabels="none",
+        upper = list(continuous = wrap(colour_corr, size=2)),
+        columnLabels = gsub('.', ' ', colnames(winRed), fixed = T), 
+        labeller = label_wrap_gen(10)
+      ) +
+  theme(strip.text = element_text(size=4, lineheight=1))
+
+
+```
+  
+From the density plots along the diagonal, we can see that a lot of the data has a right skew, except for pH which is to be expected - wine pH should be mostly acidic. Alcohol has an interesting graph as does residual sugar and density - both of which have a number of peaks. Citric acid also has two peaks. 
+
+From the correlation heatmap along the top of the matrix, I can see a number of strong correlations. Firstly in regards to quality:
+
+* Quality has a weak positive correlation with alcohol
+
+* Quality has a weak negative correlation with density
+
+Some other interesting correlations between variables:
+
+* Strong positive correlation:
+  - Density - Residual Sugar
+  - Total Sulfur Dioxide - Free Sulfur Dioxide
+  - Total Sulfur Dioxide - Density
+  
+* Weak positive correlation:
+  - Total Sulfur Dioxide - Residual Sugar
+  
+* Strong negative correlation:
+  - Alcohol - Density
+  - Alcohol - Total Sulfur Dioxide
+  - Alcohol - Residual Sugar
+  - pH - Fixed Acidity
+  
+* Weak negative correlation:
+  - Alcohol - Chlorides
+
+The strong positive correlations between density and residual sugar makes logical sense, since the more sugar the wine has the more dense the liquid will be. The relation between total sulfur dioxide and free sulfur dioxide is expected and was also seen in the winRed dataset.
+
+The relationship between total sulfur dioxide (TSO2) and density is interesting and I am not sure I completely understand. From my research, TSO2 exists as a gas in the wine to prevent it from developing bacteria, so I don't understand how adding a gas can increase density. Scientifically this should spread the liquid particles further apart and make the liquid less dense. I will look into this further.
+
+The strong negative correlations in relation to alcohol are all logical and can be expected. Since alcohol is less dense than water, it makes sense that as more alcohol increases, density decreases. 
+
+I have done some research about the relationship between alcohol and TSO2, and it turns out that "Ethanol acts synergistically and enhances the bacteria-killing effect of molecular SO2, so high-alcohol wines require less SO2 protection" (Source: https://www.extension.purdue.edu/extmedia/fs/fs-52-w.pdf), so again it makes sense that as the level of alcohol increases, the level of SO2 decreases.  
+
+Alcohol and residual sugar also makes sense, as the residual sugar is the remaining sugar after the alcoholic fermentation process finishes, so the less sugar that remains in the wine, the more alcohol that is produced from the fermentation process. 
+
+The relationship between pH and fixed acidity is logical - as the acid levels increase, pH is expected to decrease.
+
+I will look further at the quality data to determine if we can get any further information on what variables affect it:
+```{r, winWhtQuality, echo=FALSE, message=FALSE, warning=FALSE}
+# the melt function essentially takes the data from winWht$quality and reshapes it into a dataframe with only two columns - the variable and the value. 
+ggplot(melt(winWht, "quality"), aes(value, quality, color = variable)) +  
+  ggtitle("All winWht Quality") +
+  geom_point(alpha=0.3) + 
+  # Add a linear model line to show the graph to show the general gradient
+  geom_smooth(aes(value, quality, colour=variable), method=lm, se=FALSE) +
+  facet_wrap(.~variable, scales = "free")
+
+```  
+
+We can see that the top 3 variables positively affecting quality are:
+
+1. Alcohol
+
+2. pH
+
+3. Sulphates (but very minimally)
+
+
+It appears that most of the variables negatively affect the quality, with the exception of alcohol
+
+The top 3 variables negatively affecting quality are:
+
+1. Density 
+
+2. Chlorides
+
+3. Volatile Acidity
+
+
+I will now take a closer look at TSO2 and Density - as far as I understand, I believe these should have a negative correlation.
+### Total Sulfur Dioxide vs. Density  
+```{r, winWht-TSO2-vs-density, echo=FALSE, message=FALSE, warning=FALSE}
+    ggplot(winRed, aes(x=total.sulfur.dioxide , y=density)) +
+      ggtitle("Density vs. TSO2") +
+      geom_jitter(alpha = 0.3) +
+      geom_smooth(aes(total.sulfur.dioxide, density, colour="red"), method=lm, se=FALSE, show.legend = FALSE) 
+```  
+
+From the above graph, I can see that there are a few outliers could possibly be skewing the graph to become positive. Based on the rest of the data, without these outliers, I would imagine the linear model being very slightly negative, which would support the idea that an increase in TSO2 would lead to a lower density. I would need to map this out to prove this.
+
+##SUMMARY
+From the two wine datasets, I have found that the variable that affected the quality the greatest was alcohol. This held true for both winRed and winWht data. It was interesting to see the difference in how the variables affected the two different wine types.
+
+```{r, winQuality, echo=FALSE, message=FALSE, warning=FALSE}
+  ggplot(melt(winRed, "quality"), aes(value, quality, color = variable)) +  
+  ggtitle("All winRed Quality") +
+  geom_point(alpha=0.3) + 
+  geom_smooth(aes(value, quality, colour=variable), method=lm, se=FALSE) +
+  facet_wrap(.~variable, scale="free")
+  
+  
+  ggplot(melt(winWht, "quality"), aes(value, quality, color = variable)) +  
+  ggtitle("All winWht Quality") +
+  geom_point(alpha=0.3) + 
+  geom_smooth(aes(value, quality, colour=variable), method=lm, se=FALSE) +
+  facet_wrap(.~variable, scale="free")
+
+
+
+```  
+
+Where some variables affected winRed quality positively (eg. fixed acidity) they had little or negative effect on winWht quality. The only consistent value that was shown to affect quality strongly and positively in both data sets was alcohol. The values that negatively affected the quality were consistent across both however. This includes volatile acidity, density, and chlorides. This is understandable since the higher the density, the less alcohol that is present, leading to a lower quality score. The presence of volatile acidity and chlorides has been shown to have a negative impact - again this is logical since these components add a vinger-y taste and smell to the wine.
+
+I am curious about how much to rely on the findings from the winRed data set, since there are significantly less data points in this data set than there are in the winWht. If I had a similar sized data set, then maybe I would be able to draw more of a comparison between red and white wine. However, I am reluctant to do so with the current data set as I don't think it would provide a good sample.
+</font>
+
+
+
+
+
+
+
+
+
