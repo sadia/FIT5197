@@ -1,0 +1,842 @@
+# FIT5197 Assessment 2
+
+## Confidence Interval, Hypothesis Testing, Data Mining Models
+
+
+### Student Name: Sadia Karim
+
+### Student Number: 23386320
+
+## Objectives
+This assignment assesses your understanding of Confidence Interval, Hypothesis Testing, and Data Mining Models, covered in Modules 3 to 5. The total marks of this assessment is __100__, and has 30% contribution to your final score.
+
+## Important Note
+* You can complete your assignment using the codes shared in the unit (i.e. Alexandria, video, practical activities on Moodle) and this template as the bases. However, <font color='red'>**you should make sure the codes you are using are correct and relevant to the question**</font>.
+
+* Please follow the structure of this template as much as you can.
+
+* You can use the pre-populated codes cells or change them if you prefer. However, please <font color='red'>**do not change the name of the key variables, functions, and parameters**</font>. It helps us to read and understand your submission more efficiently.
+
+* Submit your source code file in R notebook (this file with your answers) and a preview file (HTML or PDF). If the marker has problems to run your source codes, the preview file will be helpful. 
+
+## Question 1: Central Limit Theorem [20 marks]
+
+<h2> Instruction on presentation of Answer </h2>
+
+The following question is an example and also how you should present your answers, omission of workings will result in loss of marks.
+
+__<span style="color:red">Sample Question:</span>__ 
+
+There are $10,000$ students participate in an exam and the exam score approximately follow a normal distribution. Given that $359$ students get scores above $90$ in the exam and $1,151$ students get lower than $60$. If there are $2,500$ students pass the exam, find out the lowest score to pass.
+
+__<span style="color:blue">Sample Solution:</span>__
+
+Let $X$ represents the exam score and $X\sim N(\mu,\sigma^2)$
+
+<span style="color:brown">Additional Note:</span> If there is a value for $\mu$ or $\sigma^2$ you are also required to write it down in the previous statement, in this case, there is no value so only the form is required. If the question asking you about central limit theorem (CLT) application or related to CLT application, you also need to state the form of CLT.
+
+$\Rightarrow$ $\textbf{e.g.}$ $\overline{x}\sim \mathcal{N}(\text{some value},\text{some value})$. CLT is taught in the lectures in great details $\Rightarrow$ please follow the format properly.
+
+``359`` students get score above ``90`` $\Rightarrow$ $P(X > 90) = P \left( \frac{X - \mu}{\sigma} > \frac{90 - \mu}{\sigma} \right) = Pr \left(Z > \frac{90 - \mu}{\sigma} \right) = 0.0359$
+
+Similarly, $P(X < 60) = P \left( \frac{X - \mu}{\sigma} < \frac{60 - \mu}{\sigma} \right) = Pr \left(Z < \frac{60 - \mu}{\sigma} \right) = 0.1151$
+
+with $Z \sim \mathcal{N}(0,1)$
+
+Looking up $\textbf{Z table}$, you can find that $\frac{90 - \mu}{\sigma} \approx 1.8$ and, $\frac{60 - \mu}{\sigma} \approx -1.2$
+
+Soving for this, we can find that $\mu = 72, \sigma = 10$
+
+Let k be the lowest score to pass and there are ``2500`` students pass the exam, then $P(X \geq k) =  P \left( \frac{X - \mu}{\sigma} \geq \frac{k - \mu}{\sigma} \right) = Pr \left(Z \geq \frac{k - \mu}{\sigma} \right) = 0.25$
+
+Looking up $\textbf{Z table}$, you can find that $\frac{k - \mu}{\sigma} \geq 0.67$. Given that $\mu = 72, \sigma = 10$, we will be able to calculate that $k \geq 78.7$.
+
+Thus, the lowest score to pass is $78.7$
+
+__<span style="color:blue">All working answers for this part need to follow this structure to receive full marks</span>__
+
+(1) The light bulb in Monash university has an average lifetime of $1,500$ hours with a standard deviation of $50$ hours. How many of these light bulbs should Monash stock up so that it can guarantee that the light will be on for at least $9,600$ hours with a probability of at least $97\%$? [5 marks]
+
+<font color='blue'> 
+Let $T$ be the "sum of total lightbulb hours" where $T\sim N(n\mu,n\sigma^2)$ (the sum version of the Central Limit Theorem (CLT)). We know from the question that $T = 9600$.    
+    
+Let $n$ be the number of lightbulbs that Monash should stock up on.  We are going to solve for $n$.  
+  
+Other information we know:  
+$\bullet$ $\mu = 1500$  
+$\bullet$ $\sigma = 50$  
+$\bullet$ $\phi(Z) = 0.97$  
+    
+From the question, we know that $P(T>9600)=0.97$  
+We can write this in the standard normal format:
+$$P\left( \frac{T-n\mu}{\sigma\sqrt{n}} > \frac{9600-n\mu}{50\sqrt{n}} \right) =0.97$$
+  
+So we end up with 
+$$P\left( Z > \frac{9600-n\mu}{50\sqrt{n}} \right) =0.97$$
+Looking at the inside of the left hand side, we have the equation 
+$$Z > \frac{9600-n\mu}{50\sqrt{n}}$$
+From the $\textbf{Z table}$ we can see that the Z-score that gives us $\approx0.97$ is $1.89$  
+  
+Substituting in our known values we get the following:  
+$$1.89>\frac{9600-1500n}{50\sqrt{n}}$$
+Rearranging this formula to solve for $n$ (I used Wolfram Alpha to solve this since the quadratic became very large and messy), we get that $n > 6.2426$.  
+Rounding this value up, Monash should stock up on $\textbf{7 lightbulbs}$  
+
+```{r}
+n<-6
+pnorm(9600, n*1500,50*sqrt(n))
+```
+
+
+</font>  
+  
+  
+(2) The error for the production of a machine is uniformly distributed over $[-0.5, 0.3]$ unit. Assuming that there are $200$ machines working at the same time, approximate the probability that the final total production differ from the exact total production by more than $5$ unit? [5 marks]
+
+<font color='blue'> 
+Let $X_i$ be the "error of the $i^{th}$ machine" where $X_i\sim U(a=-0.5,b=0.3)$  
+We can calculate the following values:  
+$\bullet$ $\mu_{X_i} = \frac{a+b}{2} = \frac{-0.5+0.3}{2} = -0.1$  
+$\bullet$ $\sigma_{X_i}^2 = \frac{(b-a)^2}{12}=\frac{(0.3-(-0.5))^2}{12}\approx0.0533$  
+$\bullet$ $\sigma_{X_i} = \sqrt{\sigma^2}\approx0.2309$  
+
+Assuming that the error of the machines are independent, let $E$ be the final total error for all $n=200$ machines.
+Therefore, $Y=X_1+X_2+...+X_n$ where we can apply the sum format of the CLT $E\sim N(n\mu,n\sigma^2)$ with:   
+$\bullet$ $n\mu = 200(-0.1)=-20$  
+$\bullet$ $n\sigma^2 = 200(0.0533)= 10.6667$  
+$\bullet$ $\sqrt{n}\sigma = 3.2659$  
+  
+  Let $A$ be the event that the final total production differ from the exact total production by more than $5$ unit. 
+  
+  It follows from the CLT that $\frac{Y-n\mu}{\sqrt{n}\sigma}$ is approximately a standard normal variable. From the question we know that the total errors in the exact total production is $0$, so we are looking for $P(A) = P(Y>5) + P(Y<-5)$
+  Let us first look at $P(Y>5)$:
+  $$P(Y>5)=P \left( \frac{Y-n\mu}{\sqrt{n}\sigma} > \frac{5-n\mu}{\sqrt{n}\sigma} \right)$$
+  $$P(Y>5)=P \left( Z > \frac{5-(-20)}{3.2659} \right)$$
+  $$P(Y>5)=P \left( Z > 7.6548 \right)$$
+Using R we find:
+```{r}
+gt5 <- 1-pnorm(7.6548)
+gt5
+```
+$$P(Z>7.6548) = 1-P(Z<7.6548) = 9.65894e-15$$
+Let us now look at $P(Y<-5)$:
+  $$P(Y<-5)=P \left( \frac{Y-n\mu}{\sqrt{n}\sigma} < \frac{-5-n\mu}{\sqrt{n}\sigma} \right)$$
+  $$P(Y<-5)=P \left( Z < \frac{-5-(-20)}{3.2659} \right)$$
+  $$P(Y<-5)=P \left( Z < 4.5929 \right)$$
+Using R we find:
+```{r}
+ltneg5 <- pnorm(4.5929)
+ltneg5
+```
+$$P(Z<4.5929)=0.9999978$$
+Using the above two values we can now find $P(A)$
+```{r}
+gt5 + ltneg5
+```
+$$P(A) = P(Y>5) + P(Y<-5) \approx \textbf{0.9999978} $$
+This output indicates that the machines are almost certain to produce 
+I have decided to keep the total decimal points as output by R.
+
+</font>
+  
+  
+(3) Let $X \sim \mathcal{N}(\mu = 0, \sigma^2 = 1)$. Let $\textbf{n}$ be the number of observations we have, What would be the lowest value for $\textbf{n}$ such that $\operatorname{Pr}\left(\frac{X}{n} < \frac{1}{4}\right) \geq 0.98$. [5 marks]
+
+<font color='blue'> 
+By multiplying both sides of the LHS by $n$, we can see that $\frac{X}{n}>\frac{1}{4}$ is the same as of $X>\frac{n}{4}$, so we can find the value of $n$ using $X$ :  
+  
+Since $X$ is already normally distributed about the mean, we can use $X$ directly when finding the Z value that gives us a probability of 0.98.
+$$\operatorname{Pr}\left(X < \frac{n}{4}\right) = 0.98$$
+From the table we can see that a Z value of $2.06$ gives us a probability of 0.98, so we can say that
+$$\operatorname{Pr}\left(X < \frac{n}{4}\right) = \operatorname{Pr}\left(Z < 2.06\right) $$
+
+Since $X$ and $Z$ have the same distribution, we can say
+$$\frac{n}{4}=2.06$$
+Solving this, we get $n=8.06$.  
+Rounding up $n$ to the nearest integer (since the number of observations must be an integer), the lowest value for $\textbf{n=9}$ 
+
+</font>
+
+
+ (4) [Dog-bites](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC27561/), believed by many to happen more frequently during full-moon, is an interesting phenomenon that we would like to investigate in this question. The number of dog-bites in a full-moon day is believed to follow a ``Poisson distribution``. In this question we will assume that the number of day-time dog-bites per hour in a full-moon day is follow a Poisson distribution with $\lambda = 5\;$, i.e. we can say that:$\;$ $\operatorname{Dog-bites}_{day}\;\sim\;\operatorname{Pois}\left(\lambda = 5\right)$
+
+* Find the probability that the number of day-time dog-bites exceeds 3 bites ($3$ or more) in an hour for a full-moon day? [2 marks]
+
+<font color='blue'> 
+From the information we know $\operatorname {Dog-bites}_{day}\;\sim\;\operatorname{Pois}\left(\lambda = 5\right)$  
+We are looking for $$P({Dog-bites}_{day} \geq 3) = 1 - \left( P({Dog-bites}_{day}=0) +P({Dog-bites}_{day}=1)+P({Dog-bites}_{day}=2) \right)$$
+  
+Substituting values into the Poisson distribution formula, we get:  
+$$P({Dog-bites}_{day} \geq 3) =  1-\left( \frac{5^0*e^{-5}}{0!}+\frac{5^1*e^{-5}}{1!}+\frac{5^2*e^{-5}}{2!}\right)\approx\textbf{0.8753}$$
+</font>
+
+
+* Night-time normally lasts for $60\%$ during a full-moon day. During night-time, the owners would normally lock up their dogs, reducing the chances of dog-bites. If this is the case, the average number of dog-bites per hour drops to $\boldsymbol{2}$ bites during night-time. If the number of dog-bites in a particular hour fails to reach $\boldsymbol{3}$ during day-time, what is the probability that this happens during night-time when the owners are more likely to lock up their dogs? [3 marks]
+
+<font color='blue'>
+Let ${Dog-bites}_{night}$ be the number of dog bites at night-time, where ${Dog-bites}_{night}~Pois(\lambda=2)$  
+Let $A$ be the event the dog-bites fail to reach 3 in a particular hour
+From the information we can see that $P(Night)=0.6$ and $P(Day)=0.4$ where $Day$ can be considered as the complement of $Night$.    
+We are looking for the $P(Night|A)$  
+Using Bayes' Theorem, we can calculate:  
+$$P(Night|A) = \frac{P(A|Night)P(Night)}{P(A|Night)P(Night) +P(A|Day)P(Day)}$$
+
+From the above, we already know from part 1 of Q4 that $P(A|Day)=1-P({Dog-bites}_{day} \geq 3)=0.1247$, so we now only need to calculate $P(A|Night)$
+We can do this by calculating:
+$$P({Dog-bites}_{night}<3) =P({Dog-bites}_{night}=0) +P({Dog-bites}_{night}=1)+P({Dog-bites}_{night}=2)$$
+Substituting values into the Poisson distribution formula, remembering that ${Dog-bites}_{night}~Pois(\lambda=2)$, we get:  
+$$P({Dog-bites}_{night} < 3) =  \frac{2^0*e^{-2}}{0!}+\frac{2^1*e^{-2}}{1!}+\frac{2^2*e^{-2}}{2!}\approx 0.6767$$
+We can say that:  
+$$P(A|Night) = P({Dog-bites}_{night} < 3) = 0.6767$$
+Substituting our new and known values  into Bayes Theorem:  
+$$P(Night|A) = \frac{P(A|Night)P(Night)}{P(A|Night)P(Night) +P(A|Day)P(Day)}=\frac{0.6767*0.6}{0.6767*0.6 +0.1247*0.4}\approx\textbf{0.9879}$$
+
+
+</font>
+
+
+## Question 2:  Hypothesis Testing [10 marks]
+
+Tom and Paul joined the chess club from their Grade 1 in primary school three years ago. They often play chess together to practice their skills. From 12 games recorded, Tom won 9 times and Paul won the rest ones. Tom thought he played better than Paul, but Paul thought Tom was just lucky. 
+
+(1) Calculate an estimate of Tom's winning rate at playing chess with Paul with a $95\%$ confidence interval. Show all working as required. [3 marks]
+
+<font color='blue'> 
+Assuming a binomial distribution, let $\hat p$ be the proportion of games that Tom wins. Therefore, $1 - \hat p$ represents the proportion of games that Paul wins (ie. games that Tom loses).
+
+Since $n=12$, we can calculate:
+$$\hat p = \frac{9}{12} = 0.75$$
+$$1 -\hat p = \frac{3}{12} = 0.25$$
+
+Applying CLT (even though the $n$ is small), a 95% confidence interval can be found using the formula:
+$$\hat p \pm z_{0.025}\sqrt{\frac{\hat p (1- \hat p)}{n}}$$
+We know that for 95% confidence, $z=1.96$, so substituting our known values into the equation we can get:
+$$0.75 \pm 1.96\sqrt{\frac{0.75*0.25}{12}} = (0.505, 0.995)$$
+So we can say with 95% confidence that Tom's winning rate lies between $\textbf{(0.505,0.995)}$
+
+</font>
+
+
+(2) Using hypothesis testing, test the hypothesis that Tom just got lucky, and the probability of wining is $50\%$ for both of them. Write down the hypothesis that you are testing, and then calculate a **p-value** using the approximate approach for testing a Bernoulli population. What does this **p-value** suggest? [7 marks]
+
+<font color='blue'> 
+  The approximate approach for testing a Bernoulli population is to use the normal approximation to the binomial.
+  Let us test a significance level of $\alpha=0.05$
+  If $X$ is the total number of games that Tom wins, then $X\sim Bin(n=12,p)$ where $p$ is the probability of winning a game.
+  
+  We need to compute the probability that Tom would have won 9 or more games out of 12 when $p=0.5$.
+  
+  We are testing to see if Tom's winning rate is actually $50\%$, so we can state our null hypothesis as:
+  $$H_0: p = p_0$$
+  Our alternative hypothesis, based on our finding in part 1, states that Tom's probability of winning is actually higher, so our alternative hypothesis can be stated as:
+  $$H_1: p \neq p_0$$
+  Assuming that $H_0$ is true, we can say that that $E(X)=np_0=6$ and $Var(X)=np_0(1-p_0)=3$ 
+  Therefore $X\sim Bin(12,0.5)$ and   
+  $$\frac{X-np_0}{\sqrt{np_0(1-p_0)}} \sim N(0,1)$$ has an approximately standard normal distribution.
+  
+  The p-value of a binomial two-tailed test of $X=9$ can be given by:
+  $$p-value = 2*min \{ P \{ X \leq 9\} ,P\{X \geq 9\}\}$$
+  We know that the mean is $6$, so we are looking for:
+  $$p-value=2P \{ X \geq 9\}$$
+  We can calculate $P\{ X \geq 9\}$ by applying the continuity correction and converting to the standard normal:
+  $$P_{0.5} \{ X \geq 9 \} = P_{0.5} \{ X \geq 8.5 \}$$
+  $$P_{0.5} \bigg\{ \frac{X-6}{\sqrt{3}} \geq \frac{8.5-6}{\sqrt{3}} \bigg\}$$
+  $$p-value = 2* P \{X \geq 1.4433 \}= 0.1489$$
+  Since this value is quite above our significance level of $0.05$, we cannot reject our null hypothesis at the 5% significance level.
+  
+  We can also use R to calculate the actual p-value by running a binomial test
+```{r}
+binom.test(9, 12, p=0.5, alternative = "two.sided")
+```
+  We get an exact p-value of $0.146$ which is very close to our normal approximation $0.1489$ so again, we do not have enough support to reject our null hypothesis at the 5% significance level.
+  
+  This p-value suggests that although a success rate of $p=0.5$ sits just outside the 95% confidence interval calculated in part 1, it is still significant enough at the 5% significance level that we cannot reject the claim that Tom's success is due to luck.
+  
+</font>
+
+## Question 3: Linear Regression and ANOVA [35 marks]
+
+Use the **red wine** dataset from Assessment 1 'winequality-red.csv'. You are asked to predict the **quality** given the other variables. You are free to do any pre-processing to improve the quality of the datasets, i.e. remove outliers. 
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# install.packages("...") or Tools -> Install packages in RStudio
+library(ISLR)
+library(MASS)
+library(dplyr)
+library(Hmisc)
+library(tidyr)
+library(gridExtra)
+library(ggplot2)
+library(gtable)
+library(grid)
+library(directlabels)
+library(GGally)
+library(reshape2)
+library(jtools)
+library(ggpubr)
+library(flextable)
+library(gt)
+library(olsrr)
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# Import data
+winRed = read.csv('winequality-red.csv') 
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# Check the overall data structure and look for null values
+summary(winRed)
+sum(is.na(winRed))
+nrow(winRed)
+```
+<font color='blue'> 
+Data has the same 12 variables, with Quality considered as the response variable, so I would expect to convert it to a factor when plotting my linear regressions. All other variables are numeric. There are no missing values. 
+</font>
+
+(1) Let **quality** be the dependent variable, based on your correlations analysis from Assessment 1, determine the best set of five independent variables that can be used to built linear regression models. [10 marks]
+
+<font color='blue'> 
+  As we are asked to predict the quality, I will split my data into a 80:20 (training:test) sample. I will build the model on the 80% sample, and test it on the 20%. I can then assess the prediction accuracy of the model.
+  
+  In Assessment 1 I chose not to remove outliers due to the fact that I do not know how or what caused these outliers and can't confirm whether they are errors or not. If they are not errors, then removing them can introduce bias to the dataset. However, for the sake of this assessment, I have decided to remove them.
+  
+  As shown in Assessment 1, below is my correlation map for all the variables.
+```{r, winRedCorr, echo=FALSE, message=FALSE, warning=FALSE}
+colour_corr <- function(data, mapping, method="p", use="everything", ...){
+              # grab data
+              x <- eval_data_col(data, mapping$x)
+              y <- eval_data_col(data, mapping$y)
+
+              # calculate correlation
+              corr <- cor(x, y, method=method, use=use)
+
+              colFn <- colorRampPalette(c("blue", "white", "red"), interpolate ='spline')
+              fill <- colFn(100)[findInterval(corr, seq(-1, 1, length=100))]
+
+              ggally_cor(data = data, mapping = mapping, ...) +
+                theme_void() +
+                theme(panel.background = element_rect(fill=fill))
+            }
+
+# plot the correlation matrix
+ggpairs(winRed,
+        progress = FALSE,
+        lower = list(continuous = wrap("points", alpha = 0.3, size=0.1)),
+        title = "winRed",
+        axisLabels="none",
+        # colour-code the correlation matrix so that we easily understand the values
+        upper = list(continuous = wrap(colour_corr, size=2)),
+        # in order the wrap the column names, we are replacing the dots in the column names with spaces
+        columnLabels = gsub('.', ' ', colnames(winRed), fixed = T), 
+        # this is because the label_wrap_gen function only wraps on white spaces. This will make it easier to read the matrix
+        labeller = label_wrap_gen(10)
+      ) +
+  theme(strip.text = element_text(size=4, lineheight=1))
+```  
+  We can see that there are a number of variables that are heavily skewed, so we will remove the outliers from fixed acidity, volatile acidity, residual sugar, chlorides, free sulfur dioxide, total sulfur dioxide, sulphates and alcohol to see if I can get a more normal-looking distribution. 
+  
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+outliers <- function(x) {
+
+  Q1 <- quantile(x, probs=.25)
+  Q3 <- quantile(x, probs=.75)
+  iqr = Q3-Q1
+
+ upper_limit = Q3 + (iqr*1.5)
+ lower_limit = Q1 - (iqr*1.5)
+
+ x > upper_limit | x < lower_limit
+}
+
+remove_outliers <- function(df, cols = names(df)) {
+  for (col in cols) {
+    df <- df[!outliers(df[[col]]),]
+  }
+  df
+}
+
+winRedClean <- remove_outliers(winRed, c('residual.sugar', 'chlorides', 'free.sulfur.dioxide', 'total.sulfur.dioxide','sulphates'))
+
+```
+
+```{r, winRedClean, echo=FALSE, message=FALSE, warning=FALSE}
+# plot the correlation matrix
+ggpairs(winRedClean,
+        progress = FALSE,
+        lower = list(continuous = wrap("points", alpha = 0.3, size=0.1)),
+        title = "winRed",
+        axisLabels="none",
+        # colour-code the correlation matrix so that we easily understand the values
+        upper = list(continuous = wrap(colour_corr, size=2)),
+        # in order the wrap the column names, we are replacing the dots in the column names with spaces
+        columnLabels = gsub('.', ' ', colnames(winRed), fixed = T), 
+        # this is because the label_wrap_gen function only wraps on white spaces. This will make it easier to read the matrix
+        labeller = label_wrap_gen(10)
+      ) +
+  theme(strip.text = element_text(size=4, lineheight=1))
+
+
+nrow(winRedClean)
+```
+```{r}
+
+## 75% of the sample size
+smp_size <- floor(0.75 * nrow(winRedClean))
+
+## set the seed to make your partition reproducible
+set.seed(100)
+train_ind <- sample(seq_len(nrow(winRedClean)), size = smp_size)
+
+winRedTrain <- winRedClean[train_ind, ]
+winRedTest <- winRedClean[-train_ind, ]
+```
+
+We can see that removing the outliers has changed the shape of the graphs and made most of them slightly more normal-looking. This is a good sign. It has also affected our correlation values to quality where we can see stronger correlations with alcohol, sulphates, volatile acidity, density, and citric acid. We have removed ~400 rows of data, but hopefully this will help develop a model that is more accurate.
+
+  In Assessment 1, I identified the following variables as the top 5 having the most correlation with Quality (ordered by |r|):   
+  
+1- Alcohol (0.476)
+2- Volatile Acidity (-0.391)
+3- Sulphates (0.251)
+4- Citric Acid (0.226)
+5- Total Sulfur Dioxide (-0.185)  
+
+However this is merely based upon the correlation coefficient. I will do a backward stepwise first to find the variables that have the most influence on quality. 
+
+```{r}
+model <- lm(quality ~ ., data=winRedTrain)
+smodel <- step(model)
+summary(model)
+```
+
+From the above we can see that the best model has 8 variables. However we are asked to find the top 5. 
+
+Based on the above, I should remove citric acid from the last model since it has the highest AIC value
+```{r}
+x7 <- lm(quality~fixed.acidity + volatile.acidity + total.sulfur.dioxide + 
+    density + pH + sulphates + alcohol,data=winRedTrain)
+summary(x7)
+```
+  This has slightly decreased our RSE and multiple R-squared, and increased our F-statistic which is good!
+  Next I will remove fixed acidity as it has the highest p-value
+```{r}
+x6 <- lm(quality~ volatile.acidity + total.sulfur.dioxide + 
+  density + pH + sulphates + alcohol,data=winRedClean)
+summary(x6)
+```
+Again our F-statistic has increased and R-squared has gone down slightly. Next I will remove total.sulfur.dioxide as it has the highest p-value
+```{r}
+x5 <- lm(quality~ volatile.acidity + density + pH + sulphates + alcohol,data=winRedClean)
+summary(x5)
+```
+  So we now have our top 5 variables for quality based on backwards stepwise
+
+  In order of importance we are left with:
+  1- Alcohol
+  2- Sulphates
+  3- Volatile Acidity
+  4- pH
+  5- Sulphates
+  
+  This is quite interesting because from Assessment 1, I had identified Citric Acid in 4th place instead of pH, and the orders were mixed around a bit. This is to be expected though because A1 did include all the outliers, whereas I have removed them from this dataset. I will now do a forward stepwise to see if it produces something different. I will base it on p-values since that is what I used to decide which variables to remove above.
+
+```{r}
+model <- lm(quality~.,data=winRedClean)
+ols_step_forward_p(model) 
+```
+  Based on the above forward stepwise, we achieve the same top 5 variables as found in the backward stepwise:
+  1- Alcohol
+  2- Sulphates
+  3- Volatile Acidity
+  4- pH
+  5- Citric Acid
+  
+  This is interesting as this matches my initial findings from Assessment 1, however it is different to the backward selection.
+  
+  I will go with the forward stepwise results and have selected the top variables to be:
+  1- Alcohol
+  2- Sulphates
+  3- Volatile Acidity
+  4- pH
+  5- Citric Acid
+  
+  From Assessment 1, I had assessed each of the variables independently and had discovered some that were dependent on others (total sulfur dioxide and free sulfur dioxide), however none of the identified variables (as far as I know) are dependent so we can use these for our linear regression models.
+</font>
+
+
+(2) Use the best five independent variables from above to generate all possible linear regression models. Show the generated models in a table. [15 marks]
+
+<font color='blue'> 
+```{r, echo=FALSE,  message=FALSE, warning=FALSE}
+library(jtools)
+vars <- c("alcohol", "sulphates", "volatile.acidity", 'pH', "citric.acid")
+# Making a smaller dataframe with the variables we are interested in
+smalldf = winRedTest[, vars]
+
+models <- list()
+for (i in 1:length(smalldf)){
+  vc <- combn(vars,i)
+  for (j in 1:ncol(vc)){
+    model <- as.formula(paste0("quality ~", paste0(vc[,j], collapse = "+")))
+    models <- c(models, model)
+  }
+}
+# rm(outputs)
+outputs <- c()
+for (i in 1:length(models)){
+  inputs = models[[i]]
+  m <- lm(inputs, data=winRedClean)
+  
+  v.model_info <- c(r.squared = summary(m)$r.squared, F = summary(m)$fstatistic[1], df.res = summary(m)$df[2])
+
+  v.all <- c(v.model_info)
+
+  outputs <- rbind(outputs, cbind(data.frame(model = paste(c(inputs))), t(v.all)))
+
+  ft <- flextable(outputs)
+
+  ft <- set_table_properties(ft, layout = "autofit", width = .6)
+}
+
+ft
+```
+</font>
+
+
+(3) Compare the all generated models and report the best one. You need to use common performance measurements to compare those models, i.e. Residuals versus Fitted, Normal Q-Q, scale-location, and residuals vs leverage. [10 marks]
+
+<font color='blue'> 
+Looking at the above models and the table, we can see that the top 5 models with the highest R-squared values are
+1- quality ~ alcohol + sulphates + volatile.acidity + pH + citric.acid (0.39012848)
+2- quality ~ alcohol + sulphates + volatile.acidity + pH (0.38553939)
+3- quality ~ alcohol + sulphates + volatile.acidity + citric.acid (0.37492010)
+4- quality ~ alcohol + sulphates + volatile.acidity (0.37487774)
+5- quality ~ alcohol + sulphates + pH (0.36150046)
+
+Using these top 4, I will run them on the test data set to see how they perform:
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(car)
+library(MASS)
+
+fit1 = lm( quality ~ alcohol + sulphates + volatile.acidity + pH + citric.acid, data = winRedTest)
+par(mfrow=c(2,3))
+plot(fit1)
+summary(fit1)
+
+# Influential Observations
+cutoff <- 4/((nrow(winRedClean)-length(fit1$coefficients)-2))
+plot(fit1, which=4, cook.levels=cutoff)
+# Influence Plot
+influencePlot(fit1, id.method="identify", main="Influence Plot", sub="Circle size is proportial to Cook's Distance" )
+```
+##### R-Squared: 0.399
+Not a great model, but not terrible. Citric acid has a very high p-value so I do not think it provides much information. Can be confirmed in the next graph where it is removed. F-statistic a little low but overall p-value very low so this is good.
+
+##### Residuals vs Fitted Plot:
+Linearity seems to hold in this case, the data points show that there is actually a very strong pattern visible, so perhaps linear is not the best model for this data. However, I know that all of the models produced a similar looking plot, so this is not unexpected.  
+
+##### Normal Q-Q:
+Data appears to be normal, with very skinny tails
+
+##### Scale Location Plot:
+The red line (average magnitude of the standardized residuals) is not horizontal, so this suggests non-linearity
+That the spread around the red line doesn’t vary with the fitted values then the variability of magnitudes doesn’t vary much as a function of the fitted values.
+
+##### Residual vs. Leverage Plot:
+There is quite a bit of distortion around the red line so could indicated heteroskedasticity
+
+##### Cook's Distance & Influcence Plot:
+There seems to be quite a few outliers and variables that seem to be influencing the graphs. Removing these values could make the fit of the model better.
+
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+fit2 = lm(quality ~ alcohol + sulphates + volatile.acidity + pH, data = winRedTest)
+par(mfrow=c(2,3))
+plot(fit2)
+summary(fit2)
+
+# Influential Observations
+cutoff <- 4/((nrow(winRedClean)-length(fit2$coefficients)-2))
+plot(fit2, which=4, cook.levels=cutoff)
+# Influence Plot
+influencePlot(fit2, id.method="identify", main="Influence Plot", sub="Circle size is proportial to Cook's Distance" )
+```
+##### R-Squared: 0.399
+Same value as the previous model so citric acid is not a crucial variable for our model. Volatile acidity has the highest p-value so maybe this is also not as crucial. F-statistic is higher in this model with a low p-value, so I would this that f2 is better than fit1.
+
+#####  Residuals vs Fitted Plot:
+Linearity seems to hold in this case, however same as the previous in that there is a distinct pattern in the data.
+
+###### Normal Q-Q:
+Data appears to be normal which is good
+
+##### Scale Location Plot:
+The red line (average magnitude of the standardized residuals) is not horizontal, so this suggests non-linearity especially at the beginning, however it seems to plateau later - could indicate a potentially expontial relationship?
+
+##### Residual vs. Leverage Plot:
+Again plot is very distorted and appears to be increasing so perhaps there is some heteroskedasticity
+
+##### Cook's Distance & Influcence Plot:
+Quite a large number of extreme outliers here that are skewing and affecting the model. We could remove them for a better fit.
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+fit3 = lm(quality ~ alcohol + sulphates + volatile.acidity + citric.acid, data = winRedTest)
+par(mfrow=c(2,3))
+plot(fit3)
+summary(fit3)
+
+# Influential Observations
+cutoff <- 4/((nrow(winRedClean)-length(fit3$coefficients)-2))
+plot(fit3, which=4, cook.levels=cutoff)
+# Influence Plot
+influencePlot(fit3, id.method="identify", main="Influence Plot", sub="Circle size is proportial to Cook's Distance" )
+```
+##### R-Squared: 0.3817
+This has performed worse than the previous graphs so again not a great model. Volatile acidity has a slightly higher p-value as does citric acid, so perhaps these are not as significant. F-statistic is slightly lower in this model, however still has a low p-value so this is ok. fit2 is still better in terms of summary.
+
+#####  Residuals vs Fitted Plot:
+Linearity seems to hold in this case, however same as the previous in that there is a distinct pattern in the data.
+
+##### Normal Q-Q:
+Data appears normal with some skinny tails on the normal distribution
+
+##### Scale Location Plot:
+The red line (average magnitude of the standardized residuals) is not horizontal, so this suggests non-linearity. Again could be an exponential relationship
+
+##### Residual vs. Leverage Plot:
+Plot is more fitted to the 0 line than the previous models, so perhaps a better model in terms of homoskedasticity
+
+#####  Cook's Distance & Influcence Plot:
+Not as many extreme outliers in this diagram and the ones that are, seem to have little influence on the graph. Perhaps not worth removing
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+fit4 = lm(quality ~ alcohol + sulphates + volatile.acidity, data = winRedTest)
+par(mfrow=c(2,3))
+plot(fit4)
+summary(fit4)
+
+# Influential Observations
+cutoff <- 4/((nrow(winRedClean)-length(fit4$coefficients)-2))
+plot(fit4, which=4, cook.levels=cutoff)
+# Influence Plot
+influencePlot(fit4, id.method="identify", main="Influence Plot", sub="Circle size is proportial to Cook's Distance" )
+```
+##### R-Squared: 0.3761
+Similar performance to the previous graph however the F-statistic is the highest in this model! The independent variables have lower p-values in this model, so are all highly significant, and overall p-value is very low so this is a good model!
+
+#####  Residuals vs Fitted Plot:
+Linearity seems to hold in this case, however same as the previous in that there is a distinct pattern in the data.
+
+#####  Normal Q-Q:
+Data appears normal with skinny tails
+
+#####  Scale Location Plot:
+The red line (average magnitude of the standardized residuals) is not horizontal, so this suggests non-linearity.
+
+#####  Residual vs. Leverage Plot:
+Some slight distortion of the graph but overall ok, so potentially indicative of homoskedasticity
+
+#####  Cook's Distance & Influcence Plot:
+Quite a few outliers in this graph, a few of which have quite a lot of influence. We should remove them.
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+fit5 = lm(quality ~ alcohol + sulphates + pH, data = winRedTest)
+par(mfrow=c(2,3))
+plot(fit5)
+summary(fit5)
+
+# Influential Observations
+cutoff <- 4/((nrow(winRedClean)-length(fit4$coefficients)-2))
+plot(fit5, which=4, cook.levels=cutoff)
+# Influence Plot
+influencePlot(fit4, id.method="identify", main="Influence Plot", sub="Circle size is proportial to Cook's Distance" )
+```
+
+##### R-Squared: 0.393
+This graph produces the highest R-Squared value and the highest F-statistic so far! The independent variables have very low p-values in this model, so are all highly significant, and overall p-value is very low so this is a good model!
+
+#####  Residuals vs Fitted Plot:
+Linearity seems to hold in this case, however same as the previous in that there is a distinct pattern in the data.
+
+#####  Normal Q-Q:
+Data appears quite normal with skinny tails
+
+#####  Scale Location Plot:
+The red line (average magnitude of the standardized residuals) is not horizontal, so this suggests non-linearity.
+
+#####  Residual vs. Leverage Plot:
+Line appears to be increasing so could be indicative of homoskedasticity which is not what we want!
+
+#####  Cook's Distance & Influcence Plot:
+Quite a few outliers in this graph, a few of which have quite a lot of influence. We should remove them.
+
+#### Summary
+  From the above, I have assessed each of the 4 models' fit to the data:
+  - assessed R-Squared value for model prediction accuracy
+  - assessed p-values and F-statistics for comparitive model performance
+  - assessed Residual vs. Fitted for linearity
+  - assessed Q-Q normal for normality
+  - assessed Residuals vs. Leverage for homoskedasticity
+
+
+  It should be noted that for all of the residuals vs. fitted models there is a very distinct pattern between the variables, so technically these variables should not be plotted using a linear model. However based on the diagnostic graphs, I have assessed that fit4: quality ~ alcohol + sulphates + volatile.acidity produces the most accurate model. Even though fit5 has a slightly higher r-squared value and F-statistic, the residual vs. fitted graph performs more poorly so I think fit4 performs the best for a linear regression.
+
+</font>
+
+
+## Question 4: Logistic Regression [35 marks]
+
+Use the **white wine** dataset modified from Assessment 1 'winequality-white.csv' in the assessment 2 package. The quality variable contains only two values: 0 - low quality; and 1 - high quality. You are asked to predict the **quality** given the other variables. 
+
+1.Data Pre-Processing. (i.e. removal of null values; numeralisation of factor features/independent varilables). You need to split the dataset into a training set and a test set. Provide the reason why you think your split ratio will produce the best result.  [5 marks]
+
+<font color='blue'>
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(inspectdf) # to inspect proportion of categorical varible
+library(GGally) # to inspect correlation between variables
+library(caret) # to perform cross-validation
+library(class) # package for knn
+library(car) # to inspect multicollinearity
+
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# Import data
+winWhite = read.csv('winequality-white.csv') 
+
+# Check the overall data structure and look for null values
+summary(winWhite)
+sum(is.na(winWhite))
+
+# There are 3 rows of data where we are missing values, so we will remove them.
+winWhite <- na.omit(winWhite)
+sum(is.na(winWhite))
+
+# variable types look acceptable so I will leave them as is
+str(winWhite)
+
+# Converting the quality column into a factor
+winWhite$quality <- as.factor(winWhite$quality)
+
+summary(winWhite)
+```
+
+
+The more data that the model has to train on, the more accurate it will be so I have done a 80:20 split, but the numbers in the test set were a little smaller than I would have liked. Of course, ideally I would be able to use all of the data to train the model, but the aim is to assess the accuracy of the model. I think 80:20 should yield a fairly accurate model.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+#Splitting the dataset into the Training set and Test set
+
+data_ones <- winWhite[which(winWhite$quality == 1), ]
+data_zeros <- winWhite[which(winWhite$quality == 0), ]
+#Train data
+set.seed(100)
+train_ones_rows <- sample(1:nrow(data_ones), 0.80*nrow(data_ones))
+train_zeros_rows <- sample(1:nrow(data_zeros), 0.80*nrow(data_zeros))
+train_ones <- data_ones[train_ones_rows, ]  
+train_zeros <- data_zeros[train_zeros_rows, ]
+winWhiteTrain <- rbind(train_ones, train_zeros)
+table(winWhiteTrain$quality)
+
+#Test Data
+test_ones <- data_ones[-train_ones_rows, ]
+test_zeros <- data_zeros[-train_zeros_rows, ]
+winWhiteTest <- rbind(test_ones, test_zeros)
+table(winWhiteTest$quality)
+
+```
+</font>
+
+
+2.Built a logistic regression model on the training data. You need to determine which factor feature(s)/independent variable(s) to use based on the **p-values** analysis. Report the **best** logistic regression model. [15 marks]
+
+<font color='blue'> Provide your answer and your explanation here.</font>
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+l1 <- glm(quality ~ ., data = winWhiteTrain, family = "binomial")
+summary(l1)
+```
+fixed.acidity has the highest p-value so I will remove it next.
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# remove fixed.acidity
+l2 <- glm(quality ~ alcohol + sulphates + pH + density + total.sulfur.dioxide + free.sulfur.dioxide + chlorides + residual.sugar + citric.acid + volatile.acidity, data = winWhiteTrain, family = "binomial")
+summary(l2) 
+```
+AIC and BIC have both improved. Remove citric.acid next as they have the highest p-values.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# remove citric.acid
+l3 <- glm(quality ~ alcohol + sulphates + pH + density + total.sulfur.dioxide + free.sulfur.dioxide + chlorides + residual.sugar + volatile.acidity, data = winWhiteTrain, family = "binomial")
+summary(l3) 
+```
+There is overall improvement. Remove chlorides next as they have the highest p-values.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# remove chlorides
+l4 <- glm(quality ~ alcohol + sulphates + pH + density + total.sulfur.dioxide + free.sulfur.dioxide + residual.sugar + volatile.acidity, data = winWhiteTrain, family = "binomial")
+summary(l4) 
+```
+Remove total.sulfur.dioxide next as it has the highest p-value
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# remove total.sulfur.dioxide
+l4 <- glm(quality ~ alcohol + sulphates + pH + density + free.sulfur.dioxide + residual.sugar + volatile.acidity, data = winWhiteTrain, family = "binomial")
+summary(l4) 
+```
+Seems to be a good final set of variables as they all have very low p-values. I also tried to remove the slightly larger ones to see if I can get an improvement in AIC or BIC but it resulted in increasing the AIC and BIC, so $\textbf{l4}$ is the final model I will go with.
+
+3.Evaluate the trained model on the test set. [15 marks]
+
+<font color='blue'> 
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+winWhiteTrainPred <- ifelse(predict(l4, type = "response") > 0.7,1, 0)
+head(winWhiteTrainPred)
+
+winWhiteTrainTab <- table(predicted = winWhiteTrainPred, actual = winWhiteTrain$quality)
+winWhiteTrainTab
+
+sum(diag(winWhiteTrainTab))/length(winWhiteTrain$quality)
+
+library(ROCR)
+pr <- prediction(winWhiteTrainPred, winWhiteTrain$quality)
+prf <- performance(pr, measure = "tpr", x.measure = "fpr")
+plot(prf)
+
+auc <- performance(pr, measure = "auc")
+auc <- auc@y.values[[1]]
+auc
+
+
+```
+  So our Binomial Logistic Regression gives a training set accuracy of $\approx 70.44\%$ and AUC value of $0.727$
+
+  Now lets apply to test data.
+  
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# Making predictions on the test set.
+winWhiteTestPred <- ifelse(predict(l4, newdata = winWhiteTest, type = "response") > 0.7, 1, 0)
+winWhiteTestTab <- table(predicted = winWhiteTestPred, actual = winWhiteTest$quality)
+winWhiteTestTab
+
+sum(diag(winWhiteTestTab))/length(winWhiteTest$quality)
+
+
+pr <- prediction(winWhiteTestPred, winWhiteTest$quality)
+prf <- performance(pr, measure = "tpr", x.measure = "fpr")
+plot(prf)
+
+auc <- performance(pr, measure = "auc")
+auc <- auc@y.values[[1]]
+auc
+
+0.8647186
+```
+  So our Binomial Logistic Regression gives a training set accuracy of $\approx 70.51\%$ This is quite close to the train data, but we have a much higher AUC value and our ROC plot looks a lot beter, so perhaps we need more rounds of training.
+</font>
+
+
+
+
