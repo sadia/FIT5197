@@ -1,5 +1,5 @@
 # Assignment 1: Probability, Bayes Theorem, and Correlation Analysis.
-## Final Mark: 50/50
+## Score: 50/50
 
 ## Objectives
 This assignment assesses your understanding of basic statistics, probability, Bayes’ Theorem and linear regression peakl, covered in Modules 1 and 2. The total marks of this assessment is 50, and has 20% contribution to your final score.
