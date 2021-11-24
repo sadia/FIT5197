@@ -522,9 +522,7 @@ getPeak(winWht$quality)
 (b) Plotting the dataset to find associations (correlations) among variables. Present and discuss your findings from each of the plots. You can put your findings below the plots. [9 marks]
 
 <font color='blue'>
-
-## winRed Variables Count Plot   
-
+## winRed Variables Count Plot  
 ```{r, winRedAll, echo=FALSE, message=FALSE, warning=FALSE}
 # gather all data for plotting
 all_winRed <- gather(winRed)
