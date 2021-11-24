@@ -1,9 +1,9 @@
 # Assignment 2: Confidence Interval, Hypothesis Testing, Data Mining Models
 
+## Score: 77/100
+
 ## Objectives
 This assignment assesses your understanding of Confidence Interval, Hypothesis Testing, and Data Mining Models, covered in Modules 3 to 5. The total marks of this assessment is 100, and has 30% contribution to your final score.
-
-## Final Mark: 77/100
 
 - Question 1: Central Limit Theorem [20 marks]
 - Question 2: Hypothesis Testing [10 marks]
